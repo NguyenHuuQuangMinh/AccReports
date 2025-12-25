@@ -1,0 +1,27 @@
+<header class="header">
+    <div class="header-left">
+        <span class="logo">📊 Report Kế Toán</span>
+    </div>
+
+    <div class="header-right">
+        <div class="user-info">
+            Xin chào,
+            <strong>{{ session.get('username', 'User') }}</strong>
+        </div>
+
+        <nav class="nav">
+            {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('admin.users') }}">Users</a>
+                <a href="{{ url_for('admin.reports') }}">Reports</a>
+            {% elif session.get('role') == 'user' %}
+                <a href="{{ url_for('user.home') }}">Home</a>
+                <a href="{{ url_for('user.favorites') }}">Danh sách yêu thích</a>
+                <a href="{{ url_for('user.history') }}">Lịch sử</a>
+            {% endif %}
+
+            <a href="{{ url_for('auth.change_password') }}">Đổi mật khẩu</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout">Đăng xuất</a>
+        </nav>
+    </div>
+</header>

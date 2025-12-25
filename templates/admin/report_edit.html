@@ -1,0 +1,69 @@
+{% extends "layout/base.html" %}
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<h2>✏️ Chỉnh sửa Report</h2>
+
+<form method="post" class="user-edit-form">
+
+    <div class="form-group">
+        <label>Tên Report</label>
+        <input type="text" name="name"
+               value="{{ report.ReportName }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Đường link</label>
+        <input type="text" name="file_url"
+               value="{{ report.FilePath }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Link Download</label>
+        <input type="text" name="file_download"
+               value="{{ report.DownloadLink }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Parameters</label>
+
+        <div id="params-wrapper">
+            {% for p in report.Params %}
+            <div class="param-row">
+                <input type="hidden" name="param_id[]" value="{{ p.id }}">
+
+                <input type="text"
+                       name="param_name[]"
+                       value="{{ p.name }}"
+                       placeholder="Param name">
+
+                <input type="text"
+                       name="param_value[]"
+                       value="{{ p.value }}"
+                       placeholder="Value">
+
+                <button type="button" class="btn remove-param">✖</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="add-param" class="btn add-param">
+            ➕ Thêm param
+        </button>
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+            <option value="1" {{ 'selected' if report.Status == 1 }}>Active</option>
+            <option value="0" {{ 'selected' if report.Status == 0 }}>Inactive</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">💾 Lưu</button>
+        <a href="{{ url_for('admin.reports') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

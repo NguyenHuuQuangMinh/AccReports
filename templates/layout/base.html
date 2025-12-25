@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+
+    <title>{% block title %}Account Report{% endblock %}</title>
+
+    <!-- CSS dùng chung -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="toast-overlay">
+          {% for category, message in messages %}
+            <div class="toast {{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if session.get('user_id') %}
+        {% include 'partials/header.html' %}
+    {% endif %}
+
+    <main class="container">
+        {% block content %} {% endblock %}
+        <script src="{{ url_for('static', filename='js/favourite.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/report.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/downloadReport.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/CloseWeb.js') }}"></script>
+        {% block scripts %}{% endblock %}
+        <div id="param-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>📝 Nhập tham số report</h3>
+
+                <form id="param-form">
+                    <div id="param-fields"></div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">
+                            ⬇ Tải report
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                            Huỷ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

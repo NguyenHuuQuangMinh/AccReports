@@ -1,0 +1,46 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Thêm Report{% endblock %}
+
+{% block content %}
+<h2>➕ Thêm Report</h2>
+
+<form method="post" class="user-edit-form">
+    <div class="form-group">
+        <label>Tên report</label>
+        <input type="text" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label>Link report</label>
+        <input type="text" name="file_url" required>
+    </div>
+
+    <div class="form-group">
+        <label>Link download</label>
+        <input type="text" name="file_download" required>
+    </div>
+
+    <div class="form-group">
+        <label>Parameters</label>
+
+        <div id="params-wrapper">
+            <div class="param-row">
+                <input type="text" name="param_name[]" placeholder="Param name">
+                <input type="text" name="param_value[]" placeholder="Value">
+                <button type="button" class="btn remove-param">✖</button>
+            </div>
+        </div>
+
+        <button type="button" id="add-param" class="btn add-param">
+            ➕ Thêm param
+        </button>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Thêm report</button>
+        <a href="{{ url_for('admin.reports') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

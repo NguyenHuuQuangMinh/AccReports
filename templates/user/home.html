@@ -1,0 +1,72 @@
+{% extends "layout/base.html" %}
+
+{% block title %}User Page{% endblock %}
+
+{% block content %}
+
+<h2>📊 Danh sách Report</h2>
+<form method="get" class="filter-bar">
+        <input type="text" name="keyword" placeholder="Tìm theo tên..."
+               value="{{ keyword }}">
+
+        <select name="sort">
+            <option value="asc" {{ 'selected' if sort == 'asc' }}>Tên A → Z</option>
+            <option value="desc" {{ 'selected' if sort == 'desc' }}>Tên Z → A</option>
+        </select>
+
+        <button type="submit" class="btn">Lọc</button>
+</form>
+{% if keyword %}
+    <div class="result-count">
+        🔎 Tìm thấy <strong>{{ total_reports }}</strong> report cho
+        "<strong>{{ keyword }}</strong>"
+    </div>
+{% else %}
+    <div class="result-count">
+        🔢 Tổng hiển thị: <strong>{{ total_reports }}</strong> report
+    </div>
+{% endif %}
+
+<div class="report-grid">
+
+    {% for r in reports %}
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-title">
+                    <span class="icon">📄</span>
+                    <h3 title="{{ r.ReportName }}">{{ r.ReportName }}</h3>
+                </div>
+
+                <button class="favorite-btn" data-id="{{ r.Id }}" aria-label="Favorite">
+                    {% if r.Id in favorites %}
+                        <i class="bi bi-star-fill"></i>
+                    {% else %}
+                        <i class="bi bi-star"></i>
+                    {% endif %}
+                </button>
+            </div>
+
+            <div class="report-meta">
+                <span class="badge excel">EXCEL</span>
+            </div>
+
+            <div class="actions">
+                <a href="{{ url_for('user.view_report', report_id=r.Id) }}" target="_blank" class="btn view">
+                    👁 Xem
+                </a>
+
+                <button
+                    class="btn download"
+                    data-report-id="{{ r.Id }}"
+                >
+                    ⬇ Tải
+                </button>
+            </div>
+        </div>
+    {% else %}
+        <p>Không có report nào.</p>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

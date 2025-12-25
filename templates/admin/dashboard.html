@@ -1,0 +1,133 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-header">
+    <h1>Trang quản trị</h1>
+    <p>Xin chào <strong>{{ session.get('username', 'Admin') }}</strong></p>
+</div>
+
+<!-- Summary cards -->
+<div class="dashboard-cards">
+    <div class="card">
+        <h3>{{ total_users }}</h3>
+        <span>Tổng Users</span>
+    </div>
+
+    <div class="card">
+        <h3>{{ total_reports }}</h3>
+        <span>Tổng Reports</span>
+    </div>
+
+    <div class="card highlight">
+        <h3>{{ active_users }}</h3>
+        <span>User đang hoạt động</span>
+    </div>
+</div>
+
+<!-- Quick actions -->
+<div class="dashboard-section">
+    <h2>⚡ Thao tác nhanh</h2>
+    <div class="quick-actions">
+        <a href="{{ url_for('admin.create_user') }}" class="btn">➕ Thêm user</a>
+        <a href="{{ url_for('admin.create_report') }}" class="btn">➕ Thêm report</a>
+        <a href="{{ url_for('admin.users') }}" class="btn outline">👤 Quản lý user</a>
+        <a href="{{ url_for('admin.reports') }}" class="btn outline">📄 Quản lý report</a>
+    </div>
+</div>
+
+<!-- Latest reports -->
+<div class="dashboard-section">
+    <h2 class="dashboard-title">📄 5 Report mới nhất</h2>
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên report</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in latest_reports %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td title="{{ r.ReportName }}" class="report-name">{{ r.ReportName }}</td>
+                <td><a href="{{ r.FilePath }}" target="_blank" class="link">Xem</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="dashboard-section">
+    <h2 class="dashboard-title">📥 Top 5 Report được tải nhiều nhất</h2>
+
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên report</th>
+                <th>Số lượt tải</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in top_downloads %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td title="{{ r.ReportName }}" class="report-name">{{ r.ReportName }}</td>
+                <td>{{ r.TotalDownloads }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="dashboard-section">
+    <h2 class="dashboard-title">👁️ Top 5 Report được xem nhiều nhất</h2>
+
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên report</th>
+                <th>Số lượt Xem</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in top_views %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td title="{{ r.ReportName }}" class="report-name">{{ r.ReportName }}</td>
+                <td>{{ r.TotalViews }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="dashboard-section">
+    <h2 class="dashboard-title">❤️ Top 5 Report được yêu thích nhiều nhất</h2>
+
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên report</th>
+                <th>Số lượt yêu thích</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in top_favorites %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td title="{{ r.ReportName }}" class="report-name">{{ r.ReportName }}</td>
+                <td>{{ r.TotalFavorites }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

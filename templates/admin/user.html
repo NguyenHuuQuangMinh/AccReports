@@ -1,0 +1,70 @@
+{% extends "layout/base.html" %}
+{% block title %}User Management{% endblock %}
+
+{% block content %}
+<h2>👤 Quản lý User</h2>
+
+<!-- FILTER -->
+<form method="get" class="filter-bar">
+    <input type="text" name="keyword" placeholder="Tìm theo tên..."
+           value="{{ keyword }}">
+
+    <select name="status">
+        <option value="">-- Trạng thái --</option>
+        <option value="1" {{ 'selected' if status == '1' }}>Active</option>
+        <option value="0" {{ 'selected' if status == '0' }}>Inactive</option>
+    </select>
+
+    <select name="sort">
+        <option value="asc" {{ 'selected' if sort == 'asc' }}>Tên A → Z</option>
+        <option value="desc" {{ 'selected' if sort == 'desc' }}>Tên Z → A</option>
+    </select>
+
+    <button type="submit" class="btn">Lọc</button>
+    <a href="{{ url_for('admin.create_user') }}" class="btn">➕ Thêm user</a>
+</form>
+
+<!-- TABLE -->
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Họ tên</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th width="120">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.Username }}</td>
+            <td>{{ u.FullName }}</td>
+            <td>{{ u.Role }}</td>
+
+            <td>
+                {% if u.Status == 1 %}
+                    <span class="badge active">Active</span>
+                {% else %}
+                    <span class="badge inactive">Inactive</span>
+                {% endif %}
+            </td>
+
+            <td class="action">
+                <a href="{{ url_for('admin.edit_user', id=u.Id) }}"
+                   class="btn-icon edit">✏️</a>
+
+                <a href="{{ url_for('admin.delete_user_route', id=u.Id) }}"
+                   class="btn-icon delete"
+                   onclick="return confirm('Xoá user này?')">🗑️</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" class="empty">Không có dữ liệu</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

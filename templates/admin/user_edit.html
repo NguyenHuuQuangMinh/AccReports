@@ -1,0 +1,49 @@
+{% extends "layout/base.html" %}
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<h2>✏️ Chỉnh sửa User</h2>
+
+<form method="post" class="user-edit-form">
+
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" value="{{ user.Username }}" disabled>
+    </div>
+
+    <div class="form-group">
+        <label>Họ tên</label>
+        <input type="text" name="full_name"
+               value="{{ user.FullName }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Role</label>
+        <select name="role">
+            <option value="user" {{ 'selected' if user.Role == 'user' }}>User</option>
+            <option value="admin" {{ 'selected' if user.Role == 'admin' }}>Admin</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Mật khẩu mới</label>
+        <input type="password"
+               name="password"
+               placeholder="Để trống nếu không đổi mật khẩu">
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+            <option value="1" {{ 'selected' if user.Status == 1 }}>Active</option>
+            <option value="0" {{ 'selected' if user.Status == 0 }}>Inactive</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">💾 Lưu</button>
+        <a href="{{ url_for('admin.users') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}
