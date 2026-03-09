@@ -1,0 +1,31 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Create Brand{% endblock %}
+
+{% block content %}
+<h2>➕ Tạo Hãng</h2>
+
+<form method="post" enctype="multipart/form-data" class="user-edit-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Tên Bộ phận</label>
+        <input type="text" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label>Logo</label>
+        <input type="file" name="logo" accept="image/*">
+    </div>
+
+     <div class="form-group">
+        <label>Chọn màu</label>
+        <input type="color" name="color" value="#000000" required>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Tạo Brand</button>
+        <a href="{{ url_for('admin.brands') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

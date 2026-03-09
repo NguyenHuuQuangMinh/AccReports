@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}Landing Page{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/LandingPage/weblink.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='picture/Logo.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='picture/Logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="toast-overlay">
+          {% for category, message in messages %}
+            <div class="toast {{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="hero-text">
+                <h1>🌐 Landing Page</h1>
+                <p>Compilation of links</p>
+            </div>
+            {% if session.get('user_id_link') %}
+                <div class="user-actions">
+                    <span class="user-greeting">
+                        Xin chào, <strong>{{ session.get('name', 'User') }}</strong>
+                    </span>
+    <!--                <a href="javascript:void(0)" class="login-btn btn-secondary" id="openChangePass">Change pass</a>-->
+                    <a href="javascript:void(0)" onclick="window.location='{{ url_for('auth.logout') }}'" class="login-btn btn-danger">Log out</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+    {% block content %} {% endblock %}
+    {% block scripts %}{% endblock %}
+<!--    <div class="modal-overlay" id="changePassModal">-->
+<!--      <div class="login-modal">-->
+<!--        <button class="modal-close" id="closeChangePass">×</button>-->
+
+<!--        <h2>🔑 Change Password</h2>-->
+<!--        <p class="modal-sub">Update your account password</p>-->
+
+<!--        <form id="changePassForm" class="login-form">-->
+<!--          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">-->
+<!--          <input type="password" name="old_password" placeholder="Current password" required>-->
+<!--          <input type="password" name="new_password" placeholder="New password" required>-->
+<!--          <input type="password" name="confirm_password" placeholder="Confirm new password" required>-->
+<!--          <button type="submit" class="modal-login-btn">Update Password</button>-->
+<!--        </form>-->
+
+<!--        <div class="modal-sub" id="changePassMsg"></div>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <div class="modal-overlay" id="addModal">
+      <div class="login-modal large-modal">
+
+        <button class="modal-close" id="closeAddModal">×</button>
+
+        <h2>➕ Add Your Content</h2>
+        <p class="modal-sub">Create folders & add your links</p>
+
+        <div class="add-tab-bar">
+          <button class="add-tab-btn active" data-tab="folder">📁 Add Folder</button>
+          <button class="add-tab-btn" data-tab="link">🔗 Add Link</button>
+        </div>
+
+        <!-- TAB: ADD FOLDER -->
+        <div class="add-tab-content show" id="tab-folder">
+          <form id="addFolderForm" method="post" action="{{ url_for('link.add_folder') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div id="folderList">
+              <div class="folder-row">
+                <input type="text" name="folder_name[]" placeholder="📁 Folder name..." required>
+                <button type="button" class="remove-folder">✕</button>
+              </div>
+            </div>
+            <button type="button" class="mini-btn" id="addMoreFolder">+ Add another folder</button>
+            <button type="submit" class="modal-login-btn">Save Folder(s)</button>
+          </form>
+        </div>
+
+        <!-- TAB: ADD LINK -->
+        <div class="add-tab-content" id="tab-link">
+          <form id="addLinkForm" method="post" action="{{ url_for('link.add_link') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="folder_id_multi" id="folderIdHidden">
+            <div id="linkList">
+              <div class="link-row">
+                <input type="text" name="link_name[]" placeholder="Link name..." required>
+                <input type="url" name="link_url[]" placeholder="https://..." required>
+                <select name="folder_id[]" id="folderSelect" required>
+                  <option value="">-- Select folder --</option>
+                  <!-- render folder here -->
+                  {% for f in folders %}
+                    <option value="{{f.Id}}">{{f.FolderName}}</option>
+                  {% endfor %}
+                </select>
+                <button type="button" class="remove-link">✕</button>
+              </div>
+            </div>
+
+            <button type="button" class="mini-btn" id="addMoreLink">+ Add another link</button>
+            <button type="submit" class="modal-login-btn">Save Link(s)</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="modal-overlay" id="editLinkModal">
+      <div class="login-modal large-modal">
+
+        <button class="modal-close" onclick="closeAddModalEditLink()">×</button>
+
+        <h2>➕ Edit Link</h2>
+        <p class="modal-sub">edit your links</p>
+
+          <form method="post" action="{{ url_for('link.update_link') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" id="edit_folder_id" name="folder_id">
+            <input type="hidden" id="edit_link_id" name="link_id">
+            <div class="form-group">
+                <label>Link Name</label>
+                  <input type="text" id="edit_link_name" name="name" required>
+            </div>
+
+            <div class="form-group">
+            <label>URL</label>
+              <input type="url" id="edit_link_url" name="url" required>
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn-primary">Save</button>
+                <button type="button" class="btn-ghost" onclick="closeAddModalEditLink()">Cancel</button>
+            </div>
+         </form>
+        </div>
+
+      </div>
+    <script>
+      const brandCount = {{ brand_count|default(0) }};
+    </script>
+    <script src="{{ url_for('static', filename='js/LandingPage/flash.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/LandingPage/WebLink.js') }}"></script>
+</body>
+</html>

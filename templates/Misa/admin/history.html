@@ -1,0 +1,98 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Lịch sử tải xuống{% endblock %}
+
+{% block content %}
+
+<h2>📜 Lịch sử hoạt động</h2>
+<form method="get" class="history-filter">
+    <div class="filter-group">
+        <label>Từ ngày</label>
+        <input type="date"  name="from_date" value="{{ from_date }}">
+    </div>
+
+    <div class="filter-group">
+        <label>Đến ngày</label>
+        <input type="date" name="to_date" value="{{ to_date }}">
+    </div>
+
+    <div class="filter-group">
+        <label>Hành động</label>
+        <select name="action">
+            <option value="">-- Tất cả --</option>
+            {%for a in action %}
+                <option value="{{ a}}" {{ 'selected' if action==a else '' }}>{{a}}</option>
+            {%endfor%}
+        </select>
+    </div>
+    <div class="filter-group search-group">
+        <label>Tên Report/ Người Dùng</label>
+        <input type="text"
+               name="keyword"
+               placeholder="Tìm theo tên report..."
+               value="{{ keyword }}">
+    </div>
+
+    <button type="submit" class="btn filter-btn">🔍 Lọc</button>
+
+    {% if from_date or to_date %}
+        <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.history_admin') }}'" class="btn reset-btn">✖ Reset</a>
+    {% endif %}
+</form>
+<div class="history-summary">
+                    <div class="summary-box download-detail" onclick="openDetail('download-detail')">
+                        ⬇ Tổng lượt tải: <strong>{{ total_download }}</strong>
+                    </div>
+                    <div class="summary-box view" onclick="openDetail('view')">
+                        👁 Tổng lượt xem: <strong>{{ total_view }}</strong>
+                    </div>
+                    <div class="summary-box api" onclick="openDetail('API')">
+                        🔗 Tổng lượt API: <strong>{{ total_api }}</strong>
+                    </div>
+                </div>
+{% if histories_by_date %}
+    {% for date, items in histories_by_date.items() %}
+        <h3 class="history-date">📅 {{ date }}</h3>
+
+        <table class="history-table-admin">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên người dùng</th>
+                    <th>Tên report</th>
+                    <th>Hành động</th>
+                    <th>Thời gian</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in items %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td class="report-name">{{ h.FullName }}</td>
+                    <td class="report-name">
+                        <a href="javascript:void(0)" onclick="window.open('{{ url_for('user.view_report', report_id=h.ReportId) }}', '_blank')"
+                           title="{{ h.ReportName }}"
+                           target="_blank">
+                            {{ h.ReportName }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if h.Action == 'download' %}
+                            <span class="history-action download">⬇ Tải</span>
+                        {% elif h.Action == 'API' %}
+                            <span class="history-action api">🔗 API</span>
+                        {% else %}
+                            <span class="history-action view">👁 Xem</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ h.CreatedAt.strftime('%H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% else %}
+<p>Chưa có lịch sử hoạt động nào.</p>
+{% endif %}
+
+{% endblock %}

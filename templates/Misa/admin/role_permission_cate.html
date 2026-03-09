@@ -1,0 +1,66 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Role Permission{% endblock %}
+
+{% block content %}
+<h2 class="page-title">
+    🛡️ Phân quyền Category cho Role: <span>{{ name_role }}</span>
+</h2>
+
+<form method="post" action="{{ url_for('admin.save_role_permissions_cate') }}" id="permission-form">
+    <input type="hidden" name="role_id" value="{{ id_role }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="permission-container">
+
+        <!-- Đã có quyền -->
+        <div class="card-per">
+            <h3>✔️ Category đã có quyền</h3>
+            <input type="text" id="search-assigned-cate" placeholder="Tìm report...">
+            <ul class ="list" id="assigned-list-cate">
+                {% for r in assigned_reports %}
+                    <li data-id="{{ r.Id }}">
+                        <span>{{ r.Name }}</span>
+
+                        <input type="hidden" name="assigned[]" value="{{ r.Id }}">
+
+                        <button class="btn-remove" type="button"
+                                onclick="moveToAvailableCate({{ r.Id }})">
+                            ➖
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Chưa có quyền -->
+        <div class="card-per">
+            <h3>➕ Category có thể phân quyền</h3>
+            <input type="text" id="search-available-cate" placeholder="Tìm report...">
+            <ul class ="list" id="available-list-cate">
+                {% for r in available_reports %}
+                    <li data-id="{{ r.Id }}">
+                        <span>{{ r.Name }}</span>
+
+                        <button class="btn-add" type="button"
+                                onclick="moveToAssignedCate({{ r.Id }})">
+                            ➕
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer-actions">
+        <a href="{{ url_for('admin.roles') }}" class="btn-cancel">⬅ Quay lại</a>
+        <button type="submit" class="btn-save">💾 Lưu phân quyền</button>
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/Misa/permissionCate.js') }}"></script>
+{% endblock %}

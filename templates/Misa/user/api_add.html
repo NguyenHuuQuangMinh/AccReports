@@ -1,0 +1,21 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Thêm API{% endblock %}
+
+{% block content %}
+<h2>➕ Thêm API</h2>
+
+<form method="post" class="user-edit-form" action="{{ url_for('user.create_api_key') }}" >
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Tên ứng dụng</label>
+        <input type="text" name="app_name" placeholder="Tên ứng dụng" required>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Tạo API Key</button>
+        <a href="javascript:void(0)" onclick="window.location='{{ url_for('user.list_api_keys') }}'" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

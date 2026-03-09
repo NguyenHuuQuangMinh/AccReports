@@ -1,0 +1,88 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Thêm Report{% endblock %}
+
+{% block content %}
+<h2>➕ Thêm Report</h2>
+
+<form method="post" class="user-edit-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Tên report</label>
+        <input type="text" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label>Link report</label>
+        <input type="text" name="file_url" required>
+    </div>
+
+    <div class="form-group">
+        <label>Link download</label>
+        <input type="text" name="file_download" required>
+    </div>
+
+    <div class="form-group">
+        <label>Mô tả</label>
+        <input type="text" name="description" required>
+    </div>
+
+    <div class="form-group">
+        <label>Category</label>
+        <select name="category_id" required>
+            <option value="">-- Chọn category --</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Parameters</label>
+
+        <div id="params-wrapper">
+            <div class="param-row">
+                <input type="text" name="param_name[]" class="param-name" placeholder="Tên Param">
+
+                <input type="text" name="param_value[]" class="param-value" placeholder="Giá trị mặc định">
+
+                <input type="text" name="param_label[]" class="param-label" placeholder="Label hiển thị (VD: Từ ngày)">
+
+                <select name="param_type[]" class="param-type">
+                    <option value="string">Text</option>
+                    <option value="int">Số nguyên</option>
+                    <option value="decimal">Số thập phân</option>
+                    <option value="date">Ngày</option>
+                    <option value="datetime">Ngày & giờ</option>
+                </select>
+
+                <label class="param-flag">
+                    <input type="checkbox" name="allow_null[0]" value="1">
+                    Null
+                </label>
+
+                <label class="param-flag">
+                    <input type="checkbox" name="allow_all[0]" value="1">
+                    All
+                </label>
+                <button type="button" class="btn remove-param">✖</button>
+            </div>
+        </div>
+
+        <button type="button" id="add-param" class="btn add-param">
+            ➕ Thêm param
+        </button>
+    </div>
+
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Thêm report</button>
+        <a href="{{ url_for('admin.reports') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/Misa/report.js') }}"></script>
+{% endblock %}

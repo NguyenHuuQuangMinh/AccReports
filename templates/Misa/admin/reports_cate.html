@@ -1,0 +1,128 @@
+{% extends "Misa/layout/base.html" %}
+{% block title %}User Management{% endblock %}
+
+{% block content %}
+<h2>📄 Quản lý thể loại Report</h2>
+
+<!-- FILTER -->
+<form method="get" class="filter-bar">
+   <div class="left">
+        <input type="text" name="keyword" placeholder="Tìm theo tên..." value="{{ keyword }}">
+
+        <select name="status">
+            <option value="">-- Trạng thái --</option>
+            <option value="1" {{ 'selected' if status == '1' }}>Active</option>
+            <option value="0" {{ 'selected' if status == '0' }}>Inactive</option>
+        </select>
+
+        <select name="sort">
+            <option value="asc" {{ 'selected' if sort == 'asc' }}>Tên A → Z</option>
+            <option value="desc" {{ 'selected' if sort == 'desc' }}>Tên Z → A</option>
+        </select>
+
+        <button type="submit" class="btn">Lọc</button>
+    </div>
+
+    <div class="right">
+        <a href="{{ url_for('admin.create_report_cate') }}" class="btn">➕ Thêm tiêu đề</a>
+        {% if not bulk %}
+            <button type="button" class="btn warning" id="btn-delete-multi-report-cate">🗑️ Xóa nhiều</button>
+            <button type="button" class="btn danger"  id="btn-delete-all-report-cate">🔥 Xóa tất cả</button>
+        {% else %}
+            <button type="button" class="btn" id="btn-cancel-bulk-report-cate">❌ Hủy</button>
+        {% endif %}
+    </div>
+
+</form>
+
+<form method="post" id="delete-form-report-cate" action="{{ url_for('admin.delete_reports_cate') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if bulk %}
+    <div class="bulk-bar">
+        <div class="bulk-info">
+            🧾 Đã chọn
+            <b id="selected-count-report-cate">{{ selected_count }}</b>
+            tiêu đề
+        </div>
+
+        <div class="bulk-actions">
+            <button type="submit"
+                    class="btn danger"
+                    id="btn-confirm-delete-report-cate"
+                    {% if selected_count == 0 %}disabled{% endif %}
+                    onclick="return confirm('⚠️ Bạn chắc chắn muốn xóa các tiêu đề đã chọn?')">
+                🗑️ Xóa
+            </button>
+        </div>
+    </div>
+    {% endif %}
+    <!-- TABLE -->
+    <table class="data-table">
+        <thead>
+            <tr>
+                {% if bulk %}
+                <th class="cb-col">
+                    <input type="checkbox" id="select-all-report-cate"
+                           {% if bulk == 'all' %}checked{% endif %}>
+                </th>
+                {% endif %}
+                <th>Tên thể loại</th>
+                <th>Trạng thái</th>
+                <th width="120">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for u in reports_cate %}
+            <tr>
+                {% if bulk %}
+                    <td class="cb-col">
+                        <input type="checkbox"
+                               class="row-check-report-cate"
+                               value="{{ u.Id }}"
+                               {% if u.Id in session.get('bulk_selected_report_cate', []) %}checked{% endif %}>
+                    </td>
+                {% endif %}
+                <td class="report-name">{{ u.Name }}</td>
+                <td>
+                    {% if u.Status == 1 %}
+                        <span class="badge active">Active</span>
+                    {% else %}
+                        <span class="badge inactive">Inactive</span>
+                    {% endif %}
+                </td>
+
+                <td class="action">
+                    <a href="{{ url_for('admin.edit_report_cate', id=u.Id) }}"
+                       class="btn-icon edit">✏️</a>
+
+                    <a href="{{ url_for('admin.delete_report_route_cate', id=u.Id) }}"
+                       class="btn-icon delete"
+                       onclick="return confirm('Xoá tiêu đề này?')">🗑️</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="empty">Không có dữ liệu</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</form>
+{% if total_pages > 1 %}
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for('admin.reports_category', page=page-1, keyword=keyword, status=status, sort=sort) }}">&laquo; Prev</a>
+    {% endif %}
+
+    {% for p in range(1, total_pages + 1) %}
+        <a href="{{ url_for('admin.reports_category', page=p, keyword=keyword, status=status, sort=sort) }}"
+           class="{{ 'active' if p == page else '' }}">{{ p }}</a>
+    {% endfor %}
+
+    {% if page < total_pages %}
+        <a href="{{ url_for('admin.reports_category', page=page+1, keyword=keyword, status=status, sort=sort) }}">Next &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

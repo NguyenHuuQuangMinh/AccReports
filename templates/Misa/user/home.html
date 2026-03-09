@@ -1,0 +1,128 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}User Page{% endblock %}
+
+{% block content %}
+
+<h2>📊 Danh sách Report</h2>
+<form method="get" class="filter-bar">
+        <input type="text" name="keyword" placeholder="Tìm theo tên..."
+               value="{{ keyword }}">
+
+        <select name="sort">
+            <option value="asc" {{ 'selected' if sort == 'asc' }}>Tên A → Z</option>
+            <option value="desc" {{ 'selected' if sort == 'desc' }}>Tên Z → A</option>
+        </select>
+
+        <select name="category_sort">
+            <option value="">-- Thể loại --</option>
+            {% for c in categories %}
+                <option value="{{ c.id }}"
+                    {{ 'selected' if cate == c.id|string }}>
+                    {{ c.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn">Lọc</button>
+</form>
+{% if keyword %}
+    <div class="result-count">
+        🔎 Tìm thấy <strong>{{ total_reports }}</strong> report cho
+        "<strong>{{ keyword }}</strong>"
+    </div>
+{% else %}
+    <div class="result-count">
+        🔢 Tổng hiển thị: <strong>{{ total_reports }}</strong> report
+    </div>
+{% endif %}
+
+<div class="report-grid">
+
+    {% for r in reports %}
+        <div class="report-card">
+            <div class="report-header">
+                <div class="report-title">
+                    <span class="icon">📄</span>
+                    <h3 title="{{ r.ReportName }}">{{ r.ReportName }}</h3>
+                </div>
+
+                <button class="favorite-btn" data-id="{{ r.Id }}" aria-label="Favorite">
+                    {% if r.Id in favorites %}
+                        <i class="bi bi-star-fill"></i>
+                    {% else %}
+                        <i class="bi bi-star"></i>
+                    {% endif %}
+                </button>
+            </div>
+
+            <div class="report-meta">
+                <span class="badge excel">EXCEL</span>
+            </div>
+
+            <div class="report-description">
+                <p class="desc-text clamped"
+                   id="desc-{{ r.Id }}"
+                   onclick="toggleDesc({{ r.Id }})">
+                    {{ r.Description or 'Chưa có mô tả cho report này.' }}
+                </p>
+            </div>
+
+            {% if r.Description %}
+            <div class="desc-overlay" id="overlay-{{ r.Id }}">
+                <div class="overlay-content">
+                    <p class="overlay-text">
+                        {{ r.Description }}
+                    </p>
+                    <span class="overlay-close"
+                          onclick="toggleDesc({{ r.Id }})">
+                        Thu gọn
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+
+
+
+            <div class="actions">
+                <a href="javascript:void(0)" onclick="window.open('{{ url_for('user.view_report', report_id=r.Id) }}', '_blank')" class="btn view">
+                    👁 Xem
+                </a>
+                <button
+                    class="btn download"
+                    data-report-id="{{ r.Id }}"
+                >
+                    ⬇ Tải
+                </button>
+                 {% if session.get('role').lower() != 'user' %}
+                <a  href="javascript:void(0)"
+                    onclick="window.location='{{ url_for('user.create_api_link', report_id=r.Id) }}'"
+                    class="btn api"
+                >
+                    🔗 API
+                </a>
+                {% endif %}
+            </div>
+        </div>
+{% else %}
+    <p>Không có report nào.</p>
+{% endfor %}
+
+</div>
+
+{% if total_pages > 1 %}
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('user.home', page=page-1, keyword=keyword, sort=sort) }}">&laquo; Prev</a>
+        {% endif %}
+
+        {% for p in range(1, total_pages + 1) %}
+            <a href="{{ url_for('user.home', page=p, keyword=keyword, sort=sort) }}"
+               class="{{ 'active' if p == page else '' }}">{{ p }}</a>
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="{{ url_for('user.home', page=page+1, keyword=keyword, sort=sort) }}">Next &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% endblock %}

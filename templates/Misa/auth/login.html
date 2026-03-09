@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Report | Login</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Misa/login.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='picture/Logo.png') }}">
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="toast-overlay">
+          {% for category, message in messages %}
+            <div class="toast {{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <!-- LOGO -->
+        <div class="login-logo">
+            <img src="{{ url_for('static', filename='picture/LogoLogin.png') }}" alt="Logo">
+        </div>
+
+        <!-- TITLE -->
+        <h1>Account Report</h1>
+        <p class="subtitle">Internal Reporting System</p>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="input-group">
+                <span class="icon">👤</span>
+                <input name="username"
+                       placeholder="Username"
+                       value="{{ session.get('username','') }}"
+                       required>
+            </div>
+
+            <div class="input-group">
+                <span class="icon">🔒</span>
+                <input name="password"
+                       type="password"
+                       placeholder="Password"
+                       required>
+            </div>
+            <div class="remember-row">
+                <label>
+                    <input type="checkbox" name="remember" {% if session.get('remember') %}checked{% endif %}>
+                    <span>Ghi nhớ đăng nhập</span>
+                </label>
+            </div>
+            <button class="btn-login">Sign in</button>
+        </form>
+
+        <div class="footer-text">
+            © 2026 Trails of Indochina
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

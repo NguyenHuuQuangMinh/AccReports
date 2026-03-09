@@ -1,0 +1,46 @@
+{% extends "Misa/layout/base.html" %}
+{% block title %}Edit Link{% endblock %}
+
+{% block content %}
+<h2>✏️ Chỉnh sửa Link</h2>
+
+<form method="post" class="user-edit-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Tên Link</label>
+        <input name= "name" type="text" value="{{ link.LinkName }}">
+    </div>
+
+     <div class="form-group">
+        <label>Đường link</label>
+        <input type="text" name="Url" value="{{ link.Url }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Bộ phận</label>
+        <select name="brand">
+            <option value="">-- Chọn Bộ phận --</option>
+            {% for b in all_brand %}
+                <option value="{{ b.Id }}"
+                    {{ 'selected' if link.BrandId == b.Id }}>
+                    {{ b.BrandName }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+            <option value="1" {{ 'selected' if link.Status == 1 }}>Active</option>
+            <option value="0" {{ 'selected' if link.Status == 0 }}>Inactive</option>
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">💾 Lưu</button>
+        <a href="{{ url_for('admin.links') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

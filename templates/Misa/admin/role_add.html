@@ -1,0 +1,21 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Create Role{% endblock %}
+
+{% block content %}
+<h2>➕ Tạo Role</h2>
+
+<form method="post" class="user-edit-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Tên Role</label>
+        <input type="text" name="name" required>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Tạo Role</button>
+        <a href="{{ url_for('admin.roles') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

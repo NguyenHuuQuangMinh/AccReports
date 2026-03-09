@@ -1,0 +1,53 @@
+{% extends "Misa/layout/base.html" %}
+{% block title %}My API Report{% endblock %}
+
+{% block content %}
+<h2>🗝️ API Report của tôi</h2>
+
+<!-- FILTER -->
+<form method="get" class="filter-bar">
+    <div class="left">
+        <input type="text" name="keyword" placeholder="Tìm theo tên..." value="{{ keyword }}">
+        <button type="submit" class="btn">Lọc</button>
+    </div>
+</form>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Tên Report</th>
+            <th>API Link</th>
+            <th width="120">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for u in keys %}
+        <tr>
+            <td>{{ u.ReportName }}</td>
+            <td class="report-name">
+                <div class="api-key-wrapper">
+                    <span class="api-key-report masked" data-key="{{ u.ApiLink }}">{{ u.ApiLink }}</span>
+
+                        <button type="button" class="btn-icon-api eye" onclick="toggleApiKey(this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button type="button" class="btn-icon-api copy" onclick="copyApiKey(this)">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+
+                </div>
+            </td>
+            <td>
+            <a href="javascript:void(0)" onclick="if(confirm('Xoá API report này?')) {window.location='{{ url_for('user.delete_API_report_route', id=u.Id) }}'}"
+                   class="btn-icon delete">🗑️</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" class="empty">Không có dữ liệu</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

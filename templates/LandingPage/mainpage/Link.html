@@ -1,0 +1,141 @@
+{% extends "LandingPage/layout/base.html" %}
+
+{% block content %}
+{% if tab == 'your' %}
+<a href="javascript:void(0)" class="fab-add" id="openAddLink">+</a>
+{% endif %}
+<div class="page-wrapper">
+
+    <div class="tab-bar">
+      <a href="javascript:void(0)" onclick="window.location='{{ url_for('link.weblink', tab='public')}}'"
+         class="tab-btn {{ 'active' if tab=='public' else '' }}">Public Links</a>
+
+      <a href="javascript:void(0)" onclick="window.location='{{ url_for('link.weblink', tab='your')}}'"
+         class="tab-btn {{ 'active' if tab=='your' else '' }}">Your Links</a>
+    </div>
+
+    <form method="get" class="filter-bar">
+        <input type="hidden" name="tab" value="{{ tab }}">
+        <input type="text" name="keyword" placeholder="Search by link name..."
+               value="{{ keyword or '' }}">
+
+        <button type="submit" class="btn btn-search">Search</button>
+    </form>
+    {% if brands and brands|length > 0 %}
+    <div class="brand-container">
+        {% for b in brands %}
+        <div class="brand-card" style="--brand-color: {{ b.color}}">
+            <div class="brand-header">
+                {% if b.logo != '' %}
+                <div class="brand-logo">
+                    <img src="{{ url_for('static', filename=b.logo) }}">
+                </div>
+                {% endif %}
+                <div class="brand-info" data-brand-id="{{ b.id }}">
+                  <div class="brand-title-row" data-brand-id="{{ b.id }}">
+                    <h2 class="brand-name">{{ b.name }}</h2>
+                    {% if tab=='your'%}
+                    <button type="button"
+                            class="btn-edit-brand"
+                            title="Edit folder name"
+                            onclick="startEditBrand(this)">✏️</button>
+                    {% endif %}
+                  </div>
+
+                  <span class="brand-badge">{{ b.link|length }} link</span>
+                </div>
+                {% if tab=='your' %}
+                <div class="folder-actions">
+                    <button type="button"
+                          class="btn-add-link"
+                          title="Add link"
+                          onclick="openAddLinkForFolder('{{ b.id }}')">
+                    ➕
+                  </button>
+
+                    <form method="POST"
+                          action="{{ url_for('link.delete_folder', id_folder=b.id) }}"
+                          onsubmit="return confirm('If you delete this folder, all links inside it will also be deleted.\n\nDo you want to continue?');"
+                          style="display:inline;">
+
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <button type="submit"
+                                class="btn-delete-folder"
+                                title="Delete folder">
+                            🗑
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="brand-links" data-folder-id="{{ b.id }}"
+                                     ondragover="event.preventDefault()"
+                                     ondrop="handleDrop(event)">
+                {% if b.link %}
+                    {% for l in b.link %}
+
+                    <div class="brand-link" draggable="true"
+                                 ondragstart="handleDrag(event)"
+                                 data-link-id="{{ l.LinkId }}"
+                                 onclick="openLink('{{ l.url }}')">
+                        <span class="link-icon">🔗</span>
+                        <span class="link-text">{{ l.name }}</span>
+                        {% if tab == 'public'%}
+                            <span class="link-arrow">→</span>
+                        {% endif %}
+                        {% if tab=='your' %}
+                        <div class="action">
+                            <span class="link-arrow">→</span>
+
+                                <button type="button"
+                                        class="btn-edit-link"
+                                        title="Edit link"
+                                        data-folder-id="{{b.id}}"
+                                        data-link-id="{{l.LinkId}}"
+                                        data-link-name="{{l.name}}"
+                                        data-link-url="{{l.url}}"
+                                        onclick="event.stopPropagation(); openEditLinkModal(this);">
+                                  ✏️
+                                </button>
+                                <form method="POST" action="{{ url_for('link.delete_link', id_link = l.LinkId)}}"
+
+                                    onsubmit="event.stopPropagation();return confirm('Are you sure you want to delete this link?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn-delete-link" title="Delete link"
+                                    onclick="event.stopPropagation();">✕</button>
+                                </form>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-link">
+                        🚫 No links available
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        {% if tab == 'your'%}
+            <div class="no-result">
+                ⚠️ No items yet. Click the + button to add a folder or link.
+            </div>
+        {% else%}
+            <div class="no-result">
+                ⚠️ No links found
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+    <footer class="footer">
+        © {{ 2026 }} • Landing Page
+    </footer>
+{% endblock %}
+
+

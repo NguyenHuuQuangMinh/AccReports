@@ -1,0 +1,31 @@
+{% extends "Misa/layout/base.html" %}
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<h2>✏️ Chỉnh sửa Tiêu đề report</h2>
+
+<form method="post" class="user-edit-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Tên tiêu đề report</label>
+        <input type="text" name="name"
+               value="{{ report_cate.Name }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+            <option value="1" {{ 'selected' if report_cate.Status == 1 }}>Active</option>
+            <option value="0" {{ 'selected' if report_cate.Status == 0 }}>Inactive</option>
+        </select>
+
+
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">💾 Lưu</button>
+        <a href="{{ url_for('admin.reports_category') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

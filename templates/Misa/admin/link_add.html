@@ -1,0 +1,36 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Create Link{% endblock %}
+
+{% block content %}
+<h2>➕ Tạo Link</h2>
+
+<form method="post" class="user-edit-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Tên Link</label>
+        <input type="text" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label>Đường link</label>
+        <input type="text" name="Url" required>
+    </div>
+
+    <div class="form-group">
+        <label>Bộ phận</label>
+        <select name="brand" required>
+            <option value="">-- Chọn Bộ phận --</option>
+            {% for b in brand_list %}
+                <option value="{{ b.Id }}">{{ b.BrandName }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Tạo Link</button>
+        <a href="{{ url_for('admin.links') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "Misa/layout/base.html" %}
+{% block title %}My API{% endblock %}
+
+{% block content %}
+<h2>🗝️ API của tôi</h2>
+
+<!-- FILTER -->
+<form method="get" class="filter-bar">
+    <div class="left">
+        <input type="text" name="keyword" placeholder="Tìm theo tên..." value="{{ keyword }}">
+        <button type="submit" class="btn">Lọc</button>
+    </div>
+
+    <div class="right">
+        <a href="javascript:void(0)" onclick="window.location='{{ url_for('user.create_api_key') }}'" class="btn">➕ Thêm API</a>
+    </div>
+</form>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Tên App</th>
+            <th>API Key</th>
+            <th>Ngày hết hạn</th>
+            <th width="120">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for u in keys %}
+        <tr>
+            <td class="API-name">{{ u.AppName }}</td>
+            <td class="report-name">
+                <div class="api-key-wrapper">
+                    <span class="api-key masked" data-key="{{ u.ApiKey }}">{{ u.ApiKey }}</span>
+
+                        <button type="button" class="btn-icon-api eye" onclick="toggleApiKey(this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button type="button" class="btn-icon-api copy" onclick="copyApiKey(this)">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+
+                </div>
+            </td>
+            <td>{{ u.ExpiredAt.strftime('%d/%m/%Y %H:%M') }}</td>
+            <td>
+            <a href="javascript:void(0)" onclick="window.location='{{ url_for('user.delete_API_route', id=u.Id) }}'"
+                   class="btn-icon delete"
+                   onclick="return confirm('Xoá API này?')">🗑️</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" class="empty">Không có dữ liệu</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

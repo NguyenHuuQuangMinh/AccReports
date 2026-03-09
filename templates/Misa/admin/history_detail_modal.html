@@ -1,0 +1,35 @@
+<h3>
+    Chi tiết hành động:
+    {% if action=='download' %}⬇ Tải{% endif %}
+    {% if action=='view' %}👁 Xem{% endif %}
+    {% if action=='API' %}🔗 API{% endif %}
+</h3>
+
+<table class="history-table-admin-details">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên người dùng</th>
+            <th>Report</th>
+            <th>Số lượt</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if data|length == 0 %}
+            <tr>
+                <td colspan="4" style="text-align:center; color:#999;">
+                    Không có lượt nào
+                </td>
+            </tr>
+        {% else %}
+            {% for name,fullname, total in data %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ fullname }}</td>
+                <td>{{ name }}</td>
+                <td>{{ total }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

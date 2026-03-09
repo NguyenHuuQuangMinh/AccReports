@@ -15,6 +15,7 @@ def get_db():
             f"PWD={os.getenv('DB_PASSWORD')};"
             "Encrypt=yes;"
             "TrustServerCertificate=yes;"
+            "Connection Timeout=30;"
         )
     return g.db
 

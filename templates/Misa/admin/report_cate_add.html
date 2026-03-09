@@ -1,0 +1,21 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Thêm tiêu đề report{% endblock %}
+
+{% block content %}
+<h2>➕ Thêm tiêu đề report</h2>
+
+<form method="post" class="user-edit-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Tên tiêu đề</label>
+        <input type="text" name="name" required>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Thêm tiêu đề</button>
+        <a href="{{ url_for('admin.reports_category') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+
+</form>
+{% endblock %}

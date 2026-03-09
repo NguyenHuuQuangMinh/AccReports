@@ -1,0 +1,39 @@
+{% extends "Misa/layout/base.html" %}
+
+{% block title %}Create User{% endblock %}
+
+{% block content %}
+<h2>➕ Tạo User</h2>
+
+<form method="post" class="user-edit-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" required>
+    </div>
+
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required>
+    </div>
+
+    <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="full_name">
+    </div>
+
+    <div class="form-group">
+        <label>Role</label>
+        <select name="role" class="form-control" required>
+            {% for role in roles %}
+                <option value="{{ role.RoleId }}">{{ role.RoleName }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Tạo user</button>
+        <a href="{{ url_for('admin.users') }}" class="btn cancel">⬅ Quay lại</a>
+    </div>
+</form>
+{% endblock %}

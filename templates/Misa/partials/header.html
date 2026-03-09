@@ -1,0 +1,59 @@
+<header class="header">
+    <div class="header-left">
+        {% if session.get('role').lower() == 'admin' %}
+            <span class="logo">📊 Quản lý Report</span>
+        {%else%}
+            <span class="logo">📊 Report</span>
+        {%endif%}
+    </div>
+
+    <div class="header-right">
+        <div class="user-info">
+            Xin chào,
+            <strong>{{ session.get('username', 'User') }}</strong>
+        </div>
+
+        <nav class="nav">
+            {% if session.get('role').lower() == 'admin' %}
+                <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.dashboard') }}'">Dashboard</a>
+                 <div class="dropdown">
+                    <a href="#">Users ▾</a>
+                    <div class="dropdown-content">
+                        <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.users') }}'">Quản lý Users</a>
+                        <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.roles') }}'">Quản lý Roles</a>
+                    </div>
+                </div>
+                 <div class="dropdown">
+                    <a href="#">Reports ▾</a>
+                    <div class="dropdown-content">
+                        <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.reports') }}'">Quản lý Reports</a>
+                        <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.reports_category') }}'">Quản lý Thể loại</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                        <a href="#">Link ▾</a>
+                        <div class="dropdown-content">
+                            <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.brands') }}'">Quản lý Bộ phận</a>
+                            <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.links') }}'">Quản lý link</a>
+                        </div>
+                </div>
+            {% else %}
+                <a href="javascript:void(0)" onclick="window.location='{{ url_for('user.home') }}'">Home</a>
+                <a href="javascript:void(0)" onclick="window.location='{{ url_for('user.favorites') }}'">Danh sách yêu thích</a>
+                {% if session.get('role').lower() != 'user' %}
+                <div class="dropdown">
+                    <a href="#">API ▾</a>
+                        <div class="dropdown-content">
+                            <a href="javascript:void(0)" onclick="window.location='{{ url_for('user.list_api_keys') }}'">API Key</a>
+                            <a href="javascript:void(0)" onclick="window.location='{{ url_for('user.list_api_report') }}'">API report</a>
+                        </div>
+                </div>
+                {% endif %}
+            {% endif %}
+             <a href="javascript:void(0)" onclick="window.location='{{ url_for('admin.history_admin') if session.get('role').lower() == 'admin' else url_for('user.history') }}'">Lịch sử</a>
+            <a href="javascript:void(0)" onclick="window.location='{{ url_for('auth.change_password') }}'">Đổi mật khẩu</a>
+            <a href="javascript:void(0)" onclick="window.location='{{ url_for('auth.logout') }}'" class="logout">Đăng xuất</a>
+        </nav>
+    </div>
+</header>
